@@ -19,12 +19,12 @@ var chats = tview.NewFlex()
 var _loginInput = loginInput{}
 
 func init() {
-	addMenu()
-	addChats()
+	// addMenu()
+	// addChats()
 
-	if err := app.SetRoot(Pages, true).Run(); err != nil {
-		panic(err)
-	}
+	// if err := app.SetRoot(Pages, true).Run(); err != nil {
+	// 	panic(err)
+	// }
 }
 
 func addMenu() {
@@ -35,13 +35,13 @@ func addMenu() {
 			_loginInput.id = text
 		}).
 		AddButton("Login", func() {
-			err := TryLogin(_loginInput.id)
-			if err != nil {
-				feedback.Clear()
-				feedback.SetTextColor(tcell.ColorDarkRed).SetText(err.Error())
-			} else {
-				feedback.Clear()
-			}
+			_ = TryLogin(_loginInput.id)
+			// if err != nil {
+			// 	feedback.Clear()
+			// 	feedback.SetTextColor(tcell.ColorDarkRed).SetText("Error login")
+			// } else {
+			// 	feedback.Clear()
+			// }
 		}).
 		AddButton("Exit", func() {
 			app.Stop()
@@ -52,7 +52,7 @@ func addMenu() {
 	menu.AddItem(nil, 0, 1, false)
 	menu.AddItem(tview.NewFlex().SetDirection(tview.FlexRow).
 		AddItem(nil, 0, 1, false).
-		AddItem(buttons, 0, 1, true).
+		AddItem(buttons, 0, 3, true).
 		AddItem(nil, 0, 1, false), 0, 1, true)
 	menu.AddItem(nil, 0, 1, false)
 

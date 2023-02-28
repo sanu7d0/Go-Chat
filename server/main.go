@@ -1,9 +1,10 @@
 package main
 
 import (
-	"server/login"
+	"server/chat"
 )
 
 func main() {
-	login.NewListener("9000")
+	chatServer := chat.ChatServer{Port: "9000"}
+	chatServer.Start()
 }
