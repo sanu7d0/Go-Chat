@@ -51,6 +51,7 @@ func (s *Server) acceptClients() {
 		}
 
 		_ = NewChatClient(conn, s.packetReceive)
+		log.Println("Accept client from " + conn.RemoteAddr().String())
 
 		// TODO: resolve id from client
 	}

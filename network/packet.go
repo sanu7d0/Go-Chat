@@ -55,3 +55,8 @@ func (p *Packet) WriteString(str string) {
 	p.WriteUInt16(uint16(len(str)))
 	p.WriteBytes([]byte(str))
 }
+
+func (p *Packet) WriteHeader(length uint16) {
+	(*p)[0] = byte(length)
+	(*p)[1] = byte(length >> 8)
+}

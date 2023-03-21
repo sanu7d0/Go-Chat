@@ -1,6 +1,8 @@
 package network
 
-import "net"
+import (
+	"net"
+)
 
 type Connection struct {
 	net.Conn
@@ -32,14 +34,20 @@ func (connection *Connection) Reader() {
 }
 
 func (connection *Connection) Writer() {
-	for {
-		packet, ok := <-connection.PacketSend
-		if !ok {
-			return
-		}
-
-		connection.Conn.Write(packet)
+	for p := range connection.PacketSend {
+		connection.Conn.Write(p)
 	}
+
+	// for {
+	// 	packet, ok := <-connection.PacketSend
+	// 	if !ok {
+	// 		return
+	// 	}
+
+	// 	log.Println("packet")
+
+	// 	connection.Conn.Write(packet)
+	// }
 }
 
 func (connection *Connection) Send(packet Packet) {
