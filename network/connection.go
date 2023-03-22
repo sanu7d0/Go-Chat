@@ -34,19 +34,8 @@ func (connection *Connection) Reader() {
 }
 
 func (connection *Connection) Writer() {
-	for p := range connection.PacketSend {
-		connection.Conn.Write(p)
-	}
-
-	// for {
-	// 	packet, ok := <-connection.PacketSend
-	// 	if !ok {
-	// 		return
-	// 	}
-
-	// 	log.Println("packet")
-
-	// 	connection.Conn.Write(packet)
+	// for p := range connection.PacketSend {
+	// 	connection.Conn.Write(p)
 	// }
 }
 
@@ -55,7 +44,9 @@ func (connection *Connection) Send(packet Packet) {
 		return
 	}
 
-	connection.PacketSend <- packet
+	// TODO: Fix blocking
+	// connection.PacketSend <- packet
+	connection.Conn.Write(packet)
 }
 
 func (connection *Connection) Disconnect() {

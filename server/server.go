@@ -9,10 +9,11 @@ import (
 )
 
 type Server struct {
-	port string
-
+	port          string
 	packetReceive chan network.Packet
 	wg            *sync.WaitGroup
+	// rooms         map[byte]*Room
+	defaultRoom *Room
 }
 
 func NewServer(port string) *Server {
@@ -20,6 +21,8 @@ func NewServer(port string) *Server {
 		port:          port,
 		packetReceive: make(chan network.Packet, 512),
 		wg:            &sync.WaitGroup{},
+		// rooms:         map[byte]*Room{},
+		defaultRoom: &Room{},
 	}
 }
 
@@ -50,10 +53,12 @@ func (s *Server) acceptClients() {
 			return
 		}
 
-		_ = NewChatClient(conn, s.packetReceive)
+		c := NewChatClient(conn, s.packetReceive)
 		log.Println("Accept client from " + conn.RemoteAddr().String())
 
-		// TODO: resolve id from client
+		s.defaultRoom.Join(c)
+
+		// TODO: Request authentication to client
 	}
 }
 
@@ -61,10 +66,6 @@ func (s *Server) handlePackets() {
 	defer s.wg.Done()
 
 	for packet := range s.packetReceive {
-		s.HandlePacket(network.NewPacketReader(&packet))
+		go s.HandlePacket(network.NewPacketReader(&packet))
 	}
-}
-
-func (s *Server) broadcast(packet network.Packet) {
-
 }

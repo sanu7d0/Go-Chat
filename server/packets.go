@@ -4,6 +4,7 @@ import "network"
 
 const (
 	ClientChatMessage = byte(iota)
+	ClientJoinRoom
 )
 
 func PacketClientChatMessage(senderId byte, message string) network.Packet {

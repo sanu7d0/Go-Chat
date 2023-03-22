@@ -1,21 +1,22 @@
 package server
 
-import "network"
+import (
+	"fmt"
+	"network"
+)
 
 func (s *Server) HandlePacket(r network.PacketReader) {
 	switch r.ReadByte() {
 	case ClientChatMessage:
-		s.clientChatMessage(r)
+		s.handleClientChatMessage(r)
 	}
 }
 
-func (s *Server) clientChatMessage(r network.PacketReader) {
+func (s *Server) handleClientChatMessage(r network.PacketReader) {
 	senderId := r.ReadByte()
 	message := r.ReadString()
+	fmt.Printf("[ChatMessage] (%d):%s\n", senderId, message)
 
-	p := network.NewPacket(ClientChatMessage)
-	p.WriteByte(senderId)
-	p.WriteString(message)
-
-	s.broadcast(p)
+	p := PacketClientChatMessage(senderId, message)
+	s.defaultRoom.Broadcast(p)
 }

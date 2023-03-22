@@ -21,6 +21,7 @@ func NewClient(addr string, port string) *Client {
 		id: 77,
 		wg: &sync.WaitGroup{},
 	}
+	c.PacketReceive = make(chan network.Packet, 128)
 
 	conn, err := net.Dial("tcp", addr+":"+port)
 	if err != nil {
@@ -39,6 +40,9 @@ func (c *Client) Run() {
 	c.wg.Add(1)
 	go c.userInput()
 
+	c.wg.Add(1)
+	go c.handlePackets()
+
 	c.wg.Wait()
 }
 
@@ -56,5 +60,13 @@ func (c *Client) userInput() {
 
 		p := server.PacketClientChatMessage(c.id, input)
 		c.Send(p)
+	}
+}
+
+func (c *Client) handlePackets() {
+	defer c.wg.Done()
+
+	for p := range c.PacketReceive {
+		go c.HandlePacket(network.NewPacketReader(&p))
 	}
 }
